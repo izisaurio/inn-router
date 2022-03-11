@@ -1,0 +1,22 @@
+{
+    "name": "izisaurio/inn-router",
+    "description": "A simple PHP router",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "izisaurio",
+            "email": "izi.isaac@gmail.com"
+        }
+    ],
+	"autoload": {
+		"psr-4": {
+			"Inn\\": "lib/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"controllers\\": "test/controllers/"
+		}
+	}
+}
