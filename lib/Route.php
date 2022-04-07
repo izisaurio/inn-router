@@ -4,8 +4,8 @@ namespace Inn;
 
 /**
  * An added route
- * For params on route use "@" then keyword (admin/user/@id) to match ([\w\-]+)
- * Use "@@" to match (.*?)
+ * For params on route use ":" then keyword (admin/user/:id) to match ([\w\-]+)
+ * Use ":*" to match (.*?)
  *
  * @author	izisaurio
  * @version	1
@@ -64,10 +64,10 @@ class Route
 		if (!\in_array($method, $this->methods)) {
 			return false;
 		}
-		if (\strpos($this->route, '@') === false) {
+		if (\strpos($this->route, ':') === false) {
 			return $this->route === $uri;
 		}
-		$route = \str_replace('@@', '(?<path>.*?)', $this->route);
+		$route = \str_replace(':*', '(?<path>.*?)', $this->route);
 		$sections = \explode('/', \ltrim($route, '/'));
 		$keywords = \array_map([$this, 'mapKeywords'], $sections);
 		$pattern = \join('/', $keywords);
@@ -91,8 +91,8 @@ class Route
 	 */
 	private function mapKeywords($value)
 	{
-		if ($value[0] === '@') {
-			$param = \ltrim($value, '@');
+		if ($value[0] === ':') {
+			$param = \ltrim($value, ':');
 			return "(?<{$param}>[\w\-]+)";
 		}
 		return $value;

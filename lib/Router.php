@@ -154,12 +154,12 @@ class Router
 	private function toCallback(array $callable, array $params = [])
 	{
 		$path = join('|', $callable);
-		if (empty($params) || \strpos($path, '@') === false) {
+		if (empty($params) || \strpos($path, ':') === false) {
 			list($class, $method) = $callable;
 		} else {
-			$subs = ['@method' => $this->method];
+			$subs = [':method' => $this->method];
 			foreach ($params as $key => $value) {
-				$subs["@{$key}"] = $value;
+				$subs[":{$key}"] = $value;
 			}
 			$controller = \str_replace(array_keys($subs), $subs, $path);
 			list($class, $method) = \explode('|', $controller);
@@ -184,6 +184,6 @@ class Router
 	 */
 	private function warning($callable)
 	{
-		\trigger_error("Not reachable callable ({$callable})", E_USER_WARNING);
+		\trigger_error("Not callable ({$callable})", E_USER_WARNING);
 	}
 }

@@ -6,7 +6,7 @@ use Inn\Router;
 
 $router = new Router();
 
-$router->match(['GET', 'POST'], '/@@', function() {
+$router->match(['GET', 'POST'], '/:*', function() {
 	echo 'En  todas papu' . PHP_EOL;
 });
 
@@ -15,12 +15,12 @@ $router->get('/', function() {
 	exit();
 });
 
-$router->get('/admin/@action', function($params) {
+$router->get('/admin/:action', function($params) {
 	echo 'administradores/' . $params['action'];
 });
 
-$router->get('/static/controller/@id', ['controllers\controller', 'users']);
+$router->get('/static/controller/:id', ['controllers\controller', 'users']);
 
 $router->get('/izisaurio', ['controllers\controller', 'action']);
 
-$router->get('/controller/@method', ['controllers\controller', '@method']);
+$router->get('/controller/:method', ['controllers\controller', ':method']);
