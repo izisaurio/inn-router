@@ -13,6 +13,14 @@ use \Closure;
 class Router
 {
 	/**
+	 * Flag to know if a warning needs to be triggeres when a callable is not reached
+	 *
+	 * @access	private
+	 * @var		bool
+	 */
+	private $warning;
+
+	/**
 	 * Request uri
 	 *
 	 * @access	private
@@ -34,11 +42,13 @@ class Router
 	 * Receives the request uri and method
 	 *
 	 * @access	public
+	 * @param	bool	$warning	Flag to throw warnings
 	 * @param	string	$uri		Current request uri
 	 * @param	string	$method		Current request method
 	 */
-	public function __construct($uri = null, $method = null)
+	public function __construct($warning = false, $uri = null, $method = null)
 	{
+		$this->warning = $warning;
 		$this->uri = $uri ?? (new Uri())->getValue();
 		$this->method = $method ?? $_SERVER['REQUEST_METHOD'];
 	}
@@ -165,12 +175,12 @@ class Router
 			list($class, $method) = \explode('|', $controller);
 		}
 		if (!\class_exists($class)) {
-			$this->warning($path);
+			$this->warning($path, 'class', $class, $method);
 			return;
 		}
 		$instance = new $class();
 		if (!\method_exists($instance, $method)) {
-			$this->warning($path);
+			$this->warning($path, 'method', $class, $method);
 			return;
 		}
 		\call_user_func_array([$instance, $method], [$params]);
@@ -181,9 +191,17 @@ class Router
 	 *
 	 * @access	private
 	 * @param	string	$callable	Callable that failed to reach
+	 * @param	string	$type		Callable not reached
+	 * @param	string	$class		Callable classname
+	 * @param	string	$method		Callable method
 	 */
-	private function warning($callable)
+	private function warning($callable, $type, $class, $method)
 	{
-		\trigger_error("Not callable ({$callable})", E_USER_WARNING);
+		if ($this->warning) {
+			\trigger_error(
+				"Not callable {$type} ({$callable}) ({$class}|{$method})",
+				E_USER_WARNING
+			);
+		}
 	}
 }
