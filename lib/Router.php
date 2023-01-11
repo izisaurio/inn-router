@@ -61,8 +61,9 @@ class Router
 	 * @param	mixed			$method		Request method(s) of the route
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
-	public function match($method, $route, $callback)
+	public function match($method, $route, $callback, $exit = true)
 	{
 		$methods = \is_array($method) ? $method : [$method];
 		$innRoute = new Route($methods, $route);
@@ -75,6 +76,9 @@ class Router
 			} else {
 				$this->toCallback($callback, $innRoute->params);
 			}
+			if ($exit) {
+				exit();
+			}
 		}
 	}
 
@@ -84,8 +88,9 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
-	public function all($route, $callback)
+	public function all($route, $callback, $exit = true)
 	{
 		$this->match(
 			['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -100,8 +105,9 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
-	public function get($route, $callback)
+	public function get($route, $callback, $exit = true)
 	{
 		$this->match('GET', $route, $callback);
 	}
@@ -112,10 +118,11 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
 	public function post($route, $callback)
 	{
-		$this->match('POST', $route, $callback);
+		$this->match('POST', $route, $callback, $exit = true);
 	}
 
 	/**
@@ -124,10 +131,11 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
 	public function put($route, $callback)
 	{
-		$this->match('PUT', $route, $callback);
+		$this->match('PUT', $route, $callback, $exit = true);
 	}
 
 	/**
@@ -136,8 +144,9 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
-	public function delete($route, $callback)
+	public function delete($route, $callback, $exit = true)
 	{
 		$this->match('DELETE', $route, $callback);
 	}
@@ -148,8 +157,9 @@ class Router
 	 * @access	public
 	 * @param	string			$route		The route
 	 * @param	Closure|array	$callback	The callback to exec
+	 * @param	bool			$exit		Glag to exit script if match
 	 */
-	public function options($route, $callback)
+	public function options($route, $callback, $exit = true)
 	{
 		$this->match('OPTIONS', $route, $callback);
 	}
@@ -169,7 +179,7 @@ class Router
 		} else {
 			$subs = [':method' => $this->method];
 			foreach ($params as $key => $value) {
-				$subs[":{$key}"] = $value;
+				$subs[":{$key}"] = \str_replace('-', '_', $value);
 			}
 			$controller = \str_replace(array_keys($subs), $subs, $path);
 			list($class, $method) = \explode('|', $controller);
