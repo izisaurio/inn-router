@@ -174,7 +174,7 @@ class Router
 	private function toCallback(array $callable, array $params = [])
 	{
 		$path = join('|', $callable);
-		if (empty($params) || \strpos($path, ':') === false) {
+		if (empty($params) && \strpos($path, ':') === false) {
 			list($class, $method) = $callable;
 		} else {
 			$subs = [':method' => $this->method];
