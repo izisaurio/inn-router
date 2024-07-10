@@ -30,7 +30,7 @@ class Uri
 		$requestUri = $_SERVER['REQUEST_URI'];
 		$directory = \dirname($_SERVER['SCRIPT_NAME']);
 		$uri = \substr($requestUri, \strlen($directory));
-		$toked = \strpos($uri, '?') !== false ? strtok($uri, '?') : $uri;
+		$toked = strpos($uri, '?') !== false ? substr($uri, 0, strpos($uri, '?')) : $uri;
 		$this->value = '/' . trim($toked, '/');
 	}
 
